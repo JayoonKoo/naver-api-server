@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import { SearchService } from "./openApiService";
 
 const app = express();
 
@@ -7,15 +8,32 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get("/api/compelete/:search", (req, res) => {
-  const params = req.params.search;
-  console.log(params);
-  res.send(params);
+app.get("/api/compelete/:search?", (req, res) => {
+  const { search } = req.params;
+  if (search) {
+    SearchService.getAssociate(search)
+      .then((data) => {
+        res.json({
+          ...data,
+          result: true,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } else {
+    res.json({
+      result: false,
+    });
+  }
 });
 
-app.post("/api/search", (req, res) => {
-  console.log(req.body);
-  res.send("완료");
+app.post("/api/search/:search", async (req, res) => {
+  const { search } = req.params;
+  console.log(search);
+
+  const data = await SearchService.getResult(search);
+  res.json(data);
 });
 
 app.listen(8080, () => {

@@ -1,36 +1,37 @@
-import request from "request";
 import { config } from "dotenv";
+import axios from "axios";
 
 config();
 
-const client_id = process.env.CLIENT_ID;
-const client_secret = process.env.CLIENT_SECRET;
-const api_url = "https://openapi.naver.com/v1/datalab/shopping/categories";
-const request_body = {
-  startDate: "2021-08-01",
-  endDate: "2021-09-30",
-  timeUnit: "month",
-  category: [
-    { name: "패션의류", param: ["50000000"] },
-    { name: "화장품/미용", param: ["50000002"] },
-  ],
-  device: "pc",
-  ages: ["20", "30"],
-  gender: "f",
+const client_id = process.env.CLIENT_ID! as string;
+const client_secret = process.env.CLIENT_SECRET! as string;
+const headers = {
+  "X-Naver-Client-Id": client_id,
+  "X-Naver-Client-Secret": client_secret,
+  "Content-Type": "application/json",
 };
 
-request.post(
-  {
-    url: api_url,
-    body: JSON.stringify(request_body),
-    headers: {
-      "X-Naver-Client-Id": client_id,
-      "X-Naver-Client-Secret": client_secret,
-      "Content-Type": "application/json",
-    },
-  },
-  function (error, response, body) {
-    console.log(response.statusCode);
-    console.log(body);
-  }
-);
+export class SearchService {
+  public static getAssociate = async (search: string) => {
+    const url = `https://mac.search.naver.com/mobile/ac?_q_enc=UTF-8&st=1&r_format=json&q=${search}`;
+    const encodUrl = encodeURI(url);
+    const { data } = await axios({
+      url: encodUrl,
+      method: "GET",
+      headers,
+    });
+
+    return data;
+  };
+
+  public static getResult = async (search: string) => {
+    const url = `https://openapi.naver.com/v1/search/shop.json?query=${search}`;
+    const encodUrl = encodeURI(url);
+    const { data } = await axios({
+      url: encodUrl,
+      method: "GET",
+      headers,
+    });
+    return data;
+  };
+}
