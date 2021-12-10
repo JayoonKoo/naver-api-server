@@ -1,12 +1,15 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { SearchService } from "./openApiService";
+import productRouter from "./router/product";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use("/api/product", productRouter);
 
 app.get("/api/compelete/:search?", (req, res) => {
   const { search } = req.params;
