@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { SearchService } from "./openApiService";
 import productRouter from "./router/product";
+import { db, sequelize } from "./db/database";
 
 const app = express();
 
@@ -33,12 +34,13 @@ app.get("/api/compelete/:search?", (req, res) => {
 
 app.post("/api/search/:search", async (req, res) => {
   const { search } = req.params;
-  console.log(search);
 
   const data = await SearchService.getResult(search);
   res.json(data);
 });
 
-app.listen(8080, () => {
-  console.log("localhost:8080 opend...");
+sequelize.sync().then((client) => {
+  app.listen(8080, () => {
+    console.log("localhost:8080 opend...");
+  });
 });
