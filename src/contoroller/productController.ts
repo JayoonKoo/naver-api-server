@@ -15,3 +15,22 @@ export const buyProduct: RequestHandler<
   ProductNaverRepository.upsert(body);
   return res.sendStatus(200);
 };
+
+type GetProductByCategoryQuery = {
+  categoryName?: string;
+};
+export const getProductByCategory: RequestHandler<
+  {},
+  {},
+  {},
+  GetProductByCategoryQuery
+> = async (req, res, next) => {
+  const { categoryName } = req.query;
+  if (categoryName) {
+    res
+      .status(200)
+      .json(await ProductNaverRepository.getDetailByCategory(categoryName));
+  } else {
+    res.status(200).json(await ProductNaverRepository.getByCategory());
+  }
+};
