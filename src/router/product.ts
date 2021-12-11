@@ -7,4 +7,6 @@ router.get("/", ProductController.getProduct);
 
 router.post("/buy", ProductController.buyProduct);
 
+router.get("/category", ProductController.getProductByCategory);
+
 export default router;
