@@ -31,6 +31,18 @@ export const getProductByCategory: RequestHandler<
       .status(200)
       .json(await ProductNaverRepository.getDetailByCategory(categoryName));
   } else {
-    res.status(200).json(await ProductNaverRepository.getByCategory());
+    const categories = await ProductNaverRepository.getByCategory();
+    const data = categories.map((category) => ({
+      x: category.category1,
+      y: category.buyCount,
+    }));
+    const productByCategory = [
+      {
+        id: "category1",
+        color: "hsl(89, 70%, 50%)",
+        data,
+      },
+    ];
+    res.status(200).json(productByCategory);
   }
 };
