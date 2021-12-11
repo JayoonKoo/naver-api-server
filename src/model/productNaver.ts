@@ -92,3 +92,17 @@ export async function upsert(req: ProductAttributes) {
     }
   );
 }
+
+export async function getByCategory() {
+  return ProductNaver.findAll({
+    group: ["category1"],
+    attributes: [
+      "category1",
+      [sequelize.fn("SUM", sequelize.col("buyCount")), "buyCount"],
+    ],
+  });
+}
+
+export async function getDetailByCategory(categoryName: string) {
+  return ProductNaver.findAll({ where: { category1: categoryName } });
+}
